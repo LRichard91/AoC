@@ -59,8 +59,6 @@ def part_1(input, debug=False):
                 if descending and lst[idx] > lst[idx - 1]:
                     safe = False
                     break
-            else:
-                break
         
         if safe:
             safeReports += 1
@@ -70,7 +68,22 @@ def part_1(input, debug=False):
 
 def part_2(input, debug=False):
     '''Solve Part 2'''
-    return 0
+    safeReports: int = 0
+
+    for lst in input:
+        newLst = [lst]
+        isSafe = part_1(newLst, debug)
+        if isSafe > 0:
+            safeReports += 1
+        else:
+            for idx, _ in enumerate(lst):
+                newLst = [[lst[x] for x, _ in enumerate(lst) if x != idx]]
+                isSafe = part_1(newLst, debug)
+                if isSafe > 0:
+                    safeReports += 1
+                    break
+    
+    return safeReports
 
 
 def main():
