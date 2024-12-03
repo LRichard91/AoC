@@ -2,22 +2,73 @@
 
 import argparse
 from pprint import pprint
+import re
 import sys
 
 
 def parse_input(filename, debug=False):
     '''Parse the input file'''
     parsed_input = []
+    with open(filename, "r") as inputFile:
+        rawInput = inputFile.read().strip('\n')
+
+    if debug:
+        print('The raw input:\n')
+        print(rawInput)
+        print('')
+
+    parsed_input.append(rawInput)
+
     return parsed_input
 
 
 def part_1(input, debug=False):
     '''Solve Part 1'''
-    return 0
+
+    pattern = re.compile(r"mul\(\d{1,3},\d{1,3}\)", re.IGNORECASE)
+    matched = pattern.findall(input[0])
+
+    toMultiply: list[tuple[int, int]] = []
+
+    if debug:
+        print(matched)
+        print('')
+
+    for item in matched:
+        item = item[4 : len(item) - 1]
+        splitItem = item.split(',')
+        toMultiply.append((int(splitItem[0]), int(splitItem[1])))
+
+    if debug:
+        print(toMultiply)
+
+    multipliedList = [x[0] * x[1] for x in toMultiply]
+
+    if debug:
+        print(multipliedList)
+
+    return sum(multipliedList)
 
 
 def part_2(input, debug=False):
     '''Solve Part 2'''
+    patternMul = re.compile(r"mul\(\d{1,3},\d{1,3}\)", re.IGNORECASE)
+    patternDo = re.compile(r"do\(\)", re.IGNORECASE)
+    patternDont = re.compile(r"don\'t\(\)", re.IGNORECASE)
+
+    if debug:
+        print(patternMul.findall(input[0]))
+        print(patternDo.search(input[0]).span())
+        print(patternDont.search(input[0]).span())
+
+    fullString = input[0]
+    toMultiply: list[tuple[int, int]] = []
+    
+    conditionalSpan: tuple[int, int] = patternDont.search(fullString).span()
+    subString: str = fullString[:conditionalSpan[1]]
+
+    
+
     return 0
 
 
