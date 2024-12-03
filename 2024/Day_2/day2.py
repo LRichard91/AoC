@@ -8,12 +8,64 @@ import sys
 def parse_input(filename, debug=False):
     '''Parse the input file'''
     parsed_input = []
+    with open(filename, "r") as inputFile:
+        rawInput: list[str] = inputFile.read().splitlines()
+
+    if debug:
+        print('The raw input:\n')
+        pprint(rawInput)
+        print('')
+
+    for item in rawInput:
+        items = item.split(" ")
+        
+        if debug:
+            print('Numbers:', items, '\n')
+        
+        intList = [int(x) for x in items]
+        parsed_input.append(intList)
+
     return parsed_input
 
 
 def part_1(input, debug=False):
     '''Solve Part 1'''
-    return 0
+    safeReports: int = 0
+
+    for lst in input:
+        safe: bool = True
+        ascending: bool = False
+        descending: bool = False
+
+        for idx, _ in enumerate(lst):
+            if idx == 0:
+                if lst[idx] < lst[idx + 1]:
+                    ascending = True
+                elif lst[idx] > lst[idx + 1]:
+                    descending = True
+                else:
+                    safe = False
+                    break
+            elif safe:
+                if lst[idx] == lst[idx - 1]:
+                    safe = False
+                    break
+                if abs(lst[idx] - lst[idx - 1]) > 3:
+                    safe = False
+                    break
+                if ascending and lst[idx] < lst[idx - 1]:
+                    safe = False
+                    break
+                if descending and lst[idx] > lst[idx - 1]:
+                    safe = False
+                    break
+            else:
+                break
+        
+        if safe:
+            safeReports += 1
+
+    return safeReports
 
 
 def part_2(input, debug=False):
